@@ -19,3 +19,47 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+
+/* Add this to your CSS file or a <style> tag */
+.remove-button-style {
+  outline: none;
+  color: #DAA06D;
+  padding: 0.2em; /* Reduced padding */
+  border: 2px dashed #DAA06D;
+  border-radius: 50%; /* Make it round */
+  background-color: #EADDCA;
+  box-shadow: 0 0 0 2px #EADDCA, 1px 1px 2px 1px rgba(0, 0, 0, 0.5);
+  transition: .1s ease-in-out, .4s color;
+}
+
+.remove-button-style:active {
+  transform: translateX(0.1em) translateY(0.1em);
+  box-shadow: 0 0 0 2px #EADDCA, 1.5px 1.5px 2.5px 1.5px rgba(0, 0, 0, 0.5);
+}
+
+.dark .bg-black {
+  background-color: #000;
+}
+
+/* globals.css */
+@layer components {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px; /* Adjust scrollbar width */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #0A0A0A; /*  Same as background */
+    border-radius: 4px; /* Optional: Rounded corners for the track */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #444444; /* Slightly lighter than the background for visibility */
+    border-radius: 4px; /* Optional: Rounded corners for the thumb */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #666666; /* Darken slightly on hover */
+  }
+}

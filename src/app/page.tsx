@@ -1,101 +1,178 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { useChat } from "ai/react";
+import Message from "@/components/message";
+import Button from "@/components/Button";
+import { Send } from "lucide-react";
+
+const SUGGESTED_QUESTIONS = [
+  "Which clothing items have the best price-to-rating ratio?",
+  "Find high-end jewelry items with rating above 4",
+  "Which home products have the highest percentage discount?",
+  "Find all beauty products with a discount greater than 30% of their initial price",
+  "Find comfortable running shoes with good customer ratings",
+  "comfortable footwear with good customer satisfaction",
+  "Find the best-rated home decor items under $50",
+];
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+    error,
+    reload,
+  } = useChat({
+    onFinish: () => {
+      setSuggestedQuestionsVisible(true);
+    },
+  });
+  const [showRetry, setShowRetry] = useState(false);
+  const [suggestedQuestionsVisible, setSuggestedQuestionsVisible] =
+    useState(true);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleSuggestedQuestionClick = (question: string) => {
+    const syntheticEvent = {
+      target: Object.assign(document.createElement("input"), {
+        value: question,
+      }),
+    } as React.ChangeEvent<HTMLInputElement>;
+    handleInputChange(syntheticEvent);
+    setSuggestedQuestionsVisible(false);
+  };
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    setSuggestedQuestionsVisible(false);
+    handleSubmit(e);
+  };
+
+  const isInputFilled = input.trim().length > 0;
+
+  return (
+    <div className="flex flex-col h-screen w-full mx-auto bg-[#0A0A0A] px-4 md:px-8 lg:px-12 overflow-y-auto scrollbar scrollbar-thumb-gray-700 scrollbar-track-gray-900 scrollbar-thumb-rounded">
+      <div className="container mx-auto max-w-6xl flex flex-col h-full">
+        <div className="flex-1">
+          {messages.map((message) => (
+            <Message key={message.id} message={message} />
+          ))}
+
+          {isLoading && (
+            <div className="p-4 text-zinc-400 flex items-center space-x-2">
+              {/* <div className="animate-pulse">AI is thinking...</div> */}
+              {showRetry && (
+                <button
+                  onClick={() => {
+                    reload();
+                    setShowRetry(false);
+                  }}
+                  className="px-3 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-sm flex items-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="mr-1"
+                  >
+                    <path d="M21 2v6h-6"></path>
+                    <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                    <path d="M3 22v-6h6"></path>
+                    <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+                  </svg>
+                  Retry
+                </button>
+              )}
+            </div>
+          )}
+
+          {error && (
+            <div className="p-4 text-red-400 flex items-center space-x-2">
+              <div>Network error. Please try again.</div>
+              <button
+                onClick={() => {
+                  reload();
+                  setShowRetry(false);
+                }}
+                className="px-3 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-sm flex items-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="mr-1"
+                >
+                  <path d="M21 2v6h-6"></path>
+                  <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                  <path d="M3 22v-6h6"></path>
+                  <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+                </svg>
+                Retry
+              </button>
+            </div>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <div className="w-full p-4 mt-auto sticky bottom-0 bg-[#0A0A0A]">
+          {suggestedQuestionsVisible && !isLoading && (
+            <div className="mb-4 p-4 bg-zinc-900 rounded-lg">
+              <h2 className="text-zinc-300 text-lg font-semibold mb-3">
+                Try These Questions
+              </h2>
+              <div className="flex overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-800 scrollbar-thumb-rounded">
+                <div className="flex flex-nowrap gap-2">
+                  {SUGGESTED_QUESTIONS.map((question, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSuggestedQuestionClick(question)}
+                      className="px-3 py-1 bg-zinc-800 text-zinc-300 rounded-full hover:bg-zinc-700 transition-colors text-sm whitespace-nowrap flex-shrink-0"
+                    >
+                      {question}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+          <form onSubmit={handleFormSubmit} className="flex gap-2">
+            <input
+              value={input}
+              onChange={(e) => {
+                handleInputChange(e);
+                if (!isLoading) {
+                  setSuggestedQuestionsVisible(e.target.value.length === 0);
+                }
+              }}
+              placeholder="Type your message..."
+              className="flex-1 pl-3 border-2 border-zinc-700 rounded-lg bg-transparent text-zinc-200 outline-none 
+                focus:border-zinc-600 transition-all duration-300 
+                placeholder-zinc-500"
+            />
+            {!isInputFilled ? (
+              <Button.Root size="xl" variant="soft" intent="neutral" disabled>
+                <Send />
+              </Button.Root>
+            ) : (
+              <Button.Root size="xl" variant="soft" intent="primary">
+                <Send />
+              </Button.Root>
+            )}
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
