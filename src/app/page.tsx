@@ -8,12 +8,11 @@ import { Send } from "lucide-react";
 
 const SUGGESTED_QUESTIONS = [
   "Which clothing items have the best price-to-rating ratio?",
-  "Find high-end jewelry items with rating above 4",
   "Which home products have the highest percentage discount?",
   "Find all beauty products with a discount greater than 30% of their initial price",
-  "Find comfortable running shoes with good customer ratings",
-  "comfortable footwear with good customer satisfaction",
   "Find the best-rated home decor items under $50",
+  "comfortable footwear with good customer satisfaction",
+  "Find high-end jewelry items with rating above 4",
 ];
 
 export default function Home() {
