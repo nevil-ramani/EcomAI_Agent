@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI-Powered Product Discovery Agent with Semantic Intelligence
 
-## Getting Started
+https://github.com/user-attachments/assets/309ff832-2c7f-435e-898c-6ab31fbda526
 
-First, run the development server:
+This project delivers an intelligent e-commerce search agent that understands natural language queries and automatically determines the optimal search strategy for retrieving the most relevant products.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Key Capabilities
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Autonomous Search Strategy Selection**: Agent intelligently decides between SQL filtering or hybrid vector+SQL search based on query semantics
+- **Natural Language Understanding**: Interprets complex shopping queries and extracts core semantic intent
+- **Hybrid Retrieval System**: Combines traditional SQL filtering with semantic vector embeddings for superior search results
+- **High-Performance Architecture**: Leverages Cloudflare AI Workers for edge computing and low-latency responses
+- **Contextual Awareness**: Understands product domains, categories, and attributes to guide more precise search
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Technology Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Frontend**: Next.js 15, Tailwindcss
+- **Backend**: Cloudflare AI Workers & Next js API
+- **Database**: LibSQL
+- **Vector Search**: BGE-large-en-v1.5 embeddings for semantic matching
+- **AI Integration**: AI SDK for seamless model communication
 
-## Learn More
+## How the Agent Works
 
-To learn more about Next.js, take a look at the following resources:
+1. **Query Analysis & Intent Extraction**:
+   - Parses natural language shopping queries
+   - Identifies semantic components (style, use case, qualities)
+   - Determines if the query requires semantic understanding or just filterable attributes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Dynamic Search Strategy Execution**:
+   - For filterable queries (price, ratings, category): Generates optimized SQL
+   - For semantic queries: Creates embedding text and combines vector search with SQL filters
+   - Handles hybrid queries with both semantic and filterable components
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Result Delivery**:
+   - Returns precisely matched products based on the optimal search strategy
+   - Prioritizes results based on semantic relevance and explicit filters
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
