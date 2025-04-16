@@ -74,17 +74,18 @@ const getHybridQuery = tool({
       const data = await response.json();
 
 
-      const embedding = await fetchEmbeddings(data.embedding_text);
 
-      const embeddingString = embedding.join(",");
       if (data.query.includes("JOIN") && data.embedding_text != "") {
-        // const join = data.query.split("JOIN")[1];
+        const embedding = await fetchEmbeddings(data.embedding_text);
+
+        const embeddingString = embedding.join(",");
+        const join = data.query.split("JOIN")[1];
         const limit = data.limit;
         // const finalQuery = `SELECT * FROM vector_top_k('product_idx', '[${embeddingString}]', ${limit}) JOIN ${join}`;
 
         try {
           const result = await dbClient.execute(
-            `SELECT id, brand, review_count, description, product_name, category_name, root_category_name, main_image, rating, initial_price, discounted_price, specifications, image_urls, rating_stars, sizes, colors, other_attributes, categories FROM vector_top_k('product_idx', '[${embeddingString}]', ${limit}) JOIN products ON products.rowid = id`
+            `SELECT id, brand, review_count, description, product_name, category_name, root_category_name, main_image, rating, initial_price, discounted_price, specifications, image_urls, rating_stars, sizes, colors, other_attributes, categories FROM vector_top_k('product_idx', '[${embeddingString}]', ${limit * 2}) JOIN ${join}`
           );
 
           // const result = await dbClient.execute(
@@ -102,7 +103,40 @@ const getHybridQuery = tool({
         }
       } else {
         console.log("The query does not contain a JOIN operation.");
-        return "The query does not contain a JOIN operation.";
+        // return "The query does not contain a JOIN operation.";
+
+
+        try {
+          // const result = await dbClient.execute(
+          //   `SELECT id, brand, review_count, description, product_name, category_name, root_category_name, main_image, rating, initial_price, discounted_price, specifications, image_urls, rating_stars, sizes, colors, other_attributes, categories FROM vector_top_k('product_idx', '[${embeddingString}]', ${limit}) JOIN products ON products.rowid = id`
+          // );
+
+          // const result = await dbClient.execute(
+          //   `SELECT brand, description FROM products LIMIT 10`
+          // );
+
+          const finalQuery = data.query.replace( "*" , "brand, review_count, description, product_name, category_name, root_category_name, main_image, rating, initial_price, discounted_price, specifications, image_urls, rating_stars, sizes, colors, other_attributes, categories");
+
+
+          // const result = await dbClient.execute(
+          //   `SELECT brand, review_count, description, product_name, category_name, root_category_name, main_image, rating, initial_price, discounted_price, specifications, image_urls, rating_stars, sizes, colors, other_attributes, categories FROM products LIMIT 10`
+          // )
+
+          const result = await dbClient.execute(
+            finalQuery
+          )
+
+          // console.log("Query result:", result);
+
+          return result.rows;
+        } catch (dbError: unknown) {
+          console.error("Database query error:", dbError);
+          if (dbError instanceof Error) {
+            return `Database query error: ${dbError.message}`;
+          } else {
+            return `Database query error: ${String(dbError)}`;
+          }
+        }
       }
     } catch (error: unknown) {
       console.error("Error fetching hybrid query:", error);

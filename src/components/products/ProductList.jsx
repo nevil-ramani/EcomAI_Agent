@@ -21,13 +21,13 @@ const ImageWithFallback = ({ src, alt, className }) => {
         className={`${className} flex items-center justify-center bg-gray-800 border border-gray-700 rounded-lg`}
       >
         <ImageIcon className="w-12 h-12 text-gray-500" />
-        <span className="ml-2 text-gray-500">Image Not Available</span>
+        <span className="ml-2 text-gray-500 text-sm">Image Not Available</span>
       </div>
     );
   }
 
   return (
-    <div className={`${className} relative`}>
+    <div className={className}>
       <Image
         src={src}
         alt={alt}
@@ -68,6 +68,297 @@ const renderStars = (rating, size = "sm") => {
     );
   });
 };
+
+// const ProductModal = ({ product, onClose }) => {
+//   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+//   const [activeTab, setActiveTab] = useState("specifications");
+
+//   const imageUrls = useMemo(() => {
+//     if (Array.isArray(product.image_urls)) {
+//       return product.image_urls;
+//     }
+//     if (typeof product.image_urls === "string") {
+//       try {
+//         return JSON.parse(product.image_urls);
+//       } catch (e) {
+//         console.error("Failed to parse image_urls:", e);
+//         return product.main_image ? [product.main_image] : [];
+//       }
+//     }
+//     return product.main_image ? [product.main_image] : [];
+//   }, [product.image_urls, product.main_image]);
+
+//   const specifications = useMemo(() => {
+//     if (Array.isArray(product.specifications)) {
+//       return product.specifications;
+//     }
+//     if (typeof product.specifications === "string") {
+//       try {
+//         return JSON.parse(product.specifications);
+//       } catch (e) {
+//         console.error("Failed to parse specifications:", e);
+//         return [];
+//       }
+//     }
+//     return [];
+//   }, [product.specifications]);
+
+//   const colors = useMemo(() => {
+//     if (Array.isArray(product.colors)) {
+//       return product.colors;
+//     }
+//     if (typeof product.colors === "string") {
+//       try {
+//         return JSON.parse(product.colors);
+//       } catch (e) {
+//         console.error("Failed to parse colors:", e);
+//         return [];
+//       }
+//     }
+//     return [];
+//   }, [product.colors]);
+
+//   const sizes = useMemo(() => {
+//     if (Array.isArray(product.sizes)) {
+//       return product.sizes;
+//     }
+//     if (typeof product.sizes === "string") {
+//       try {
+//         return JSON.parse(product.sizes);
+//       } catch (e) {
+//         console.error("Failed to parse sizes:", e);
+//         return [];
+//       }
+//     }
+//     return [];
+//   }, [product.sizes]);
+
+//   const categories = useMemo(() => {
+//     if (Array.isArray(product.categories)) {
+//       return product.categories;
+//     }
+//     if (typeof product.categories === "string") {
+//       try {
+//         return JSON.parse(product.categories);
+//       } catch (e) {
+//         console.error("Failed to parse categories:", e);
+//         return [];
+//       }
+//     }
+//     return [];
+//   }, [product.categories]);
+
+//   const tabs = [
+//     {
+//       id: "specifications",
+//       label: "Specifications",
+//       icon: <Box className="w-5 h-5 mr-2" />,
+//     },
+//     {
+//       id: "details",
+//       label: "Product Details",
+//       icon: <Info className="w-5 h-5 mr-2" />,
+//     },
+//     {
+//       id: "description",
+//       label: "Description",
+//       icon: <Layers className="w-5 h-5 mr-2" />,
+//     },
+//   ];
+
+//   return (
+//     <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 p-4 overflow-y-auto pt-8 md:pt-4 md:items-center">
+//       <div className="bg-zinc-900 text-white rounded-2xl max-w-6xl w-full my-8 flex flex-col overflow-hidden shadow-2xl border border-gray-800">
+//         <div className="flex justify-between items-center p-4 border-b border-zinc-700">
+//           <h2 className="text-lg md:text-xl font-bold flex items-center text-gray-300 break-words max-w-[80%]">
+//             <Tag className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 flex-shrink-0 text-blue-500" />
+//             <span className="line-clamp-1">{product.product_name}</span>
+//           </h2>
+//           <button
+//             onClick={onClose}
+//             className="hover:bg-gray-800 rounded-full p-2 transition-colors"
+//           >
+//             <X className="w-6 h-6" />
+//           </button>
+//         </div>
+
+//         <div className="grid md:grid-cols-2 gap-4 md:gap-6 p-4 md:p-6 overflow-y-auto custom-scrollbar">
+//           <div>
+//             <div className="mb-4 relative h-[300px] sm:h-[400px] md:h-[500px]">
+//               {imageUrls.length > 0 ? (
+//                 <Image
+//                   src={imageUrls[currentImageIndex]}
+//                   alt={product.product_name}
+//                   fill
+//                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+//                   className="rounded-lg"
+//                   style={{ objectFit: "contain" }}
+//                 />
+//               ) : (
+//                 <div className="w-full h-full flex items-center justify-center bg-gray-800 rounded-lg">
+//                   <ImageIcon className="w-16 h-16 text-gray-600" />
+//                   <p className="ml-2 text-gray-400">No image available</p>
+//                 </div>
+//               )}
+//             </div>
+//             <div className="flex space-x-2 overflow-x-auto mt-4 pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-800">
+//               <div className="flex space-x-2 whitespace-nowrap">
+//                 {imageUrls.length > 1 &&
+//                   imageUrls.map((url, index) => (
+//                     <div
+//                       key={index}
+//                       className={`inline-block relative min-w-[60px] w-16 md:w-20 h-16 md:h-20 rounded-md overflow-hidden cursor-pointer ${
+//                         index === currentImageIndex
+//                           ? "ring-2 ring-blue-500"
+//                           : ""
+//                       }`}
+//                       onClick={() => setCurrentImageIndex(index)}
+//                     >
+//                       <Image
+//                         src={url}
+//                         alt={`Product thumbnail ${index + 1}`}
+//                         fill
+//                         sizes="80px"
+//                         className="object-cover"
+//                       />
+//                     </div>
+//                   ))}
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="space-y-4 md:space-y-6">
+//             <div>
+//               <p className="text-xl md:text-2xl font-bold text-blue-600">
+//                 ${product.discounted_price.toFixed(2)}
+//                 {product.initial_price && (
+//                   <span className="ml-2 line-through text-gray-500 text-sm md:text-base">
+//                     ${product.initial_price.toFixed(2)}
+//                   </span>
+//                 )}
+//               </p>
+//               <div className="flex items-center mt-2">
+//                 {renderStars(product.rating || 0, "lg")}
+//                 <span className="ml-2 text-sm md:text-base text-gray-400">
+//                   ({product.rating || 0}) - {product.review_count || 0} Reviews
+//                 </span>
+//               </div>
+//             </div>
+
+//             <div className="flex overflow-x-auto border-b border-gray-700 mb-4 pb-0">
+//               {tabs.map((tab) => (
+//                 <button
+//                   key={tab.id}
+//                   className={`flex items-center px-2 md:px-4 py-2 transition-colors whitespace-nowrap text-sm md:text-base ${
+//                     activeTab === tab.id
+//                       ? "border-b-2 border-blue-500 text-blue-500"
+//                       : "text-gray-400 hover:text-white"
+//                   }`}
+//                   onClick={() => setActiveTab(tab.id)}
+//                 >
+//                   {tab.icon}
+//                   {tab.label}
+//                 </button>
+//               ))}
+//             </div>
+
+//             <div className="max-h-[300px] md:max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-800">
+//               {activeTab === "specifications" && (
+//                 <div>
+//                   <h3 className="font-semibold mb-2 text-gray-300">
+//                     Full Specifications
+//                   </h3>
+//                   <table className="w-full">
+//                     <tbody>
+//                       {specifications.map((spec, index) => (
+//                         <tr key={index} className="border-b border-gray-700">
+//                           <td className="py-2 pr-2 font-medium text-gray-300 text-sm md:text-base">
+//                             {spec.name}
+//                           </td>
+//                           <td className="py-2 text-gray-400 text-sm md:text-base">
+//                             {spec.value}
+//                           </td>
+//                         </tr>
+//                       ))}
+//                     </tbody>
+//                   </table>
+//                 </div>
+//               )}
+
+//               {activeTab === "details" && (
+//                 <div className="space-y-4">
+//                   <div>
+//                     <h3 className="font-semibold mb-2 text-gray-300 flex items-center">
+//                       <Shield className="w-4 h-4 md:w-5 md:h-5 mr-2 text-green-500" />
+//                       Categories
+//                     </h3>
+//                     <div className="flex flex-wrap gap-2">
+//                       {categories.map((category, index) => (
+//                         <span
+//                           key={index}
+//                           className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-xs md:text-sm"
+//                         >
+//                           {category}
+//                         </span>
+//                       ))}
+//                     </div>
+//                   </div>
+
+//                   {sizes.length > 0 && (
+//                     <div>
+//                       <h3 className="font-semibold mb-2 text-gray-300">
+//                         Available Sizes:
+//                       </h3>
+//                       <div className="flex flex-wrap gap-2">
+//                         {sizes.map((size, index) => (
+//                           <span
+//                             key={index}
+//                             className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-xs md:text-sm"
+//                           >
+//                             {size}
+//                           </span>
+//                         ))}
+//                       </div>
+//                     </div>
+//                   )}
+
+//                   {colors.length > 0 && (
+//                     <div>
+//                       <h3 className="font-semibold mb-2 text-gray-300">
+//                         Available Colors:
+//                       </h3>
+//                       <div className="flex flex-wrap gap-2">
+//                         {colors.map((color, index) => (
+//                           <span
+//                             key={index}
+//                             className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-xs md:text-sm"
+//                           >
+//                             {color}
+//                           </span>
+//                         ))}
+//                       </div>
+//                     </div>
+//                   )}
+//                 </div>
+//               )}
+
+//               {activeTab === "description" && (
+//                 <div>
+//                   <h3 className="font-semibold mb-2 text-gray-300">
+//                     Product Description
+//                   </h3>
+//                   <p className="text-gray-400 whitespace-pre-wrap text-sm md:text-base">
+//                     {product.description}
+//                   </p>
+//                 </div>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 const ProductModal = ({ product, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -152,39 +443,53 @@ const ProductModal = ({ product, onClose }) => {
     {
       id: "specifications",
       label: "Specifications",
-      icon: <Box className="w-5 h-5 mr-2" />,
+      icon: <Box className="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2" />,
     },
     {
       id: "details",
       label: "Product Details",
-      icon: <Info className="w-5 h-5 mr-2" />,
+      icon: <Info className="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2" />,
     },
     {
       id: "description",
       label: "Description",
-      icon: <Layers className="w-5 h-5 mr-2" />,
+      icon: <Layers className="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2" />,
     },
   ];
 
+  // Handle click outside the modal content to close it
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 p-4 overflow-y-auto pt-8 md:pt-4 md:items-center">
-      <div className="bg-zinc-900 text-white rounded-2xl max-w-6xl w-full my-8 flex flex-col overflow-hidden shadow-2xl border border-gray-800">
-        <div className="flex justify-between items-center p-4 border-b border-zinc-700">
-          <h2 className="text-lg md:text-xl font-bold flex items-center text-gray-300 break-words max-w-[80%]">
-            <Tag className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 flex-shrink-0 text-blue-500" />
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-2 sm:p-4 overflow-y-auto"
+      onClick={handleBackdropClick}
+    >
+      <div
+        className="bg-zinc-900 text-white rounded-xl sm:rounded-2xl w-full max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-6xl my-2 sm:my-8 flex flex-col overflow-hidden shadow-2xl border border-gray-800"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-center p-3 sm:p-4 border-b border-zinc-700">
+          <h2 className="text-base sm:text-lg md:text-xl font-bold flex items-center text-gray-300 break-words max-w-[75%]">
+            <Tag className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 mr-2 flex-shrink-0 text-blue-500" />
             <span className="line-clamp-1">{product.product_name}</span>
           </h2>
           <button
             onClick={onClose}
-            className="hover:bg-gray-800 rounded-full p-2 transition-colors"
+            className="hover:bg-gray-800 rounded-full p-1.5 sm:p-2 transition-colors"
+            aria-label="Close"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4 md:gap-6 p-4 md:p-6 overflow-y-auto custom-scrollbar">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 lg:gap-6 p-3 sm:p-4 md:p-6 overflow-y-auto max-h-[80vh] md:max-h-[85vh]">
           <div>
-            <div className="mb-4 relative h-[300px] sm:h-[400px] md:h-[500px]">
+            <div className="mb-3 sm:mb-4 relative h-[200px] sm:h-[300px] md:h-[400px] lg:h-[450px]">
               {imageUrls.length > 0 ? (
                 <Image
                   src={imageUrls[currentImageIndex]}
@@ -196,60 +501,58 @@ const ProductModal = ({ product, onClose }) => {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-800 rounded-lg">
-                  <ImageIcon className="w-16 h-16 text-gray-600" />
-                  <p className="ml-2 text-gray-400">No image available</p>
+                  <ImageIcon className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-gray-600" />
+                  <p className="ml-2 text-sm sm:text-base text-gray-400">
+                    No image available
+                  </p>
                 </div>
               )}
             </div>
-            <div className="flex space-x-2 overflow-x-auto mt-4 pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-800">
-              <div className="flex space-x-2 whitespace-nowrap">
-                {imageUrls.length > 1 &&
-                  imageUrls.map((url, index) => (
-                    <div
-                      key={index}
-                      className={`inline-block relative min-w-[60px] w-16 md:w-20 h-16 md:h-20 rounded-md overflow-hidden cursor-pointer ${
-                        index === currentImageIndex
-                          ? "ring-2 ring-blue-500"
-                          : ""
-                      }`}
-                      onClick={() => setCurrentImageIndex(index)}
-                    >
-                      <Image
-                        src={url}
-                        alt={`Product thumbnail ${index + 1}`}
-                        fill
-                        sizes="80px"
-                        className="object-cover"
-                      />
-                    </div>
-                  ))}
-              </div>
+            <div className="flex space-x-2 overflow-x-auto mt-2 sm:mt-4 pb-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+              {imageUrls.length > 1 &&
+                imageUrls.map((url, index) => (
+                  <div
+                    key={index}
+                    className={`inline-block relative min-w-[50px] w-12 sm:w-16 md:w-20 h-12 sm:h-16 md:h-20 rounded-md overflow-hidden cursor-pointer ${
+                      index === currentImageIndex ? "ring-2 ring-blue-500" : ""
+                    }`}
+                    onClick={() => setCurrentImageIndex(index)}
+                  >
+                    <Image
+                      src={url}
+                      alt={`Product thumbnail ${index + 1}`}
+                      fill
+                      sizes="(max-width: 768px) 60px, 80px"
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
             </div>
           </div>
 
-          <div className="space-y-4 md:space-y-6">
+          <div className="space-y-3 sm:space-y-4 md:space-y-6">
             <div>
-              <p className="text-xl md:text-2xl font-bold text-blue-600">
+              <p className="text-lg sm:text-xl md:text-2xl font-bold text-blue-600">
                 ${product.discounted_price.toFixed(2)}
                 {product.initial_price && (
-                  <span className="ml-2 line-through text-gray-500 text-sm md:text-base">
+                  <span className="ml-2 line-through text-gray-500 text-xs sm:text-sm md:text-base">
                     ${product.initial_price.toFixed(2)}
                   </span>
                 )}
               </p>
-              <div className="flex items-center mt-2">
+              <div className="flex items-center mt-1 sm:mt-2">
                 {renderStars(product.rating || 0, "lg")}
-                <span className="ml-2 text-sm md:text-base text-gray-400">
+                <span className="ml-2 text-xs sm:text-sm md:text-base text-gray-400">
                   ({product.rating || 0}) - {product.review_count || 0} Reviews
                 </span>
               </div>
             </div>
 
-            <div className="flex overflow-x-auto border-b border-gray-700 mb-4 pb-0">
+            <div className="flex overflow-x-auto border-b border-gray-700 mb-3 pb-0">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
-                  className={`flex items-center px-2 md:px-4 py-2 transition-colors whitespace-nowrap text-sm md:text-base ${
+                  className={`flex items-center px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 transition-colors whitespace-nowrap text-xs sm:text-sm md:text-base ${
                     activeTab === tab.id
                       ? "border-b-2 border-blue-500 text-blue-500"
                       : "text-gray-400 hover:text-white"
@@ -262,20 +565,20 @@ const ProductModal = ({ product, onClose }) => {
               ))}
             </div>
 
-            <div className="max-h-[300px] md:max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-800">
+            <div className="max-h-[200px] sm:max-h-[250px] md:max-h-[300px] lg:max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 pr-1">
               {activeTab === "specifications" && (
                 <div>
-                  <h3 className="font-semibold mb-2 text-gray-300">
+                  <h3 className="font-semibold mb-1 sm:mb-2 text-gray-300 text-sm sm:text-base">
                     Full Specifications
                   </h3>
                   <table className="w-full">
                     <tbody>
                       {specifications.map((spec, index) => (
                         <tr key={index} className="border-b border-gray-700">
-                          <td className="py-2 pr-2 font-medium text-gray-300 text-sm md:text-base">
+                          <td className="py-1.5 sm:py-2 pr-2 font-medium text-gray-300 text-xs sm:text-sm md:text-base">
                             {spec.name}
                           </td>
-                          <td className="py-2 text-gray-400 text-sm md:text-base">
+                          <td className="py-1.5 sm:py-2 text-gray-400 text-xs sm:text-sm md:text-base">
                             {spec.value}
                           </td>
                         </tr>
@@ -286,17 +589,17 @@ const ProductModal = ({ product, onClose }) => {
               )}
 
               {activeTab === "details" && (
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div>
-                    <h3 className="font-semibold mb-2 text-gray-300 flex items-center">
-                      <Shield className="w-4 h-4 md:w-5 md:h-5 mr-2 text-green-500" />
+                    <h3 className="font-semibold mb-1 sm:mb-2 text-gray-300 flex items-center text-sm sm:text-base">
+                      <Shield className="w-4 h-4 md:w-5 md:h-5 mr-1 sm:mr-2 text-green-500" />
                       Categories
                     </h3>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
                       {categories.map((category, index) => (
                         <span
                           key={index}
-                          className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-xs md:text-sm"
+                          className="px-2 sm:px-3 py-0.5 sm:py-1 bg-gray-800 text-gray-300 rounded-full text-xxs sm:text-xs md:text-sm"
                         >
                           {category}
                         </span>
@@ -306,14 +609,14 @@ const ProductModal = ({ product, onClose }) => {
 
                   {sizes.length > 0 && (
                     <div>
-                      <h3 className="font-semibold mb-2 text-gray-300">
+                      <h3 className="font-semibold mb-1 sm:mb-2 text-gray-300 text-sm sm:text-base">
                         Available Sizes:
                       </h3>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-1.5 sm:gap-2">
                         {sizes.map((size, index) => (
                           <span
                             key={index}
-                            className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-xs md:text-sm"
+                            className="px-2 sm:px-3 py-0.5 sm:py-1 bg-gray-800 text-gray-300 rounded-full text-xxs sm:text-xs md:text-sm"
                           >
                             {size}
                           </span>
@@ -324,14 +627,14 @@ const ProductModal = ({ product, onClose }) => {
 
                   {colors.length > 0 && (
                     <div>
-                      <h3 className="font-semibold mb-2 text-gray-300">
+                      <h3 className="font-semibold mb-1 sm:mb-2 text-gray-300 text-sm sm:text-base">
                         Available Colors:
                       </h3>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-1.5 sm:gap-2">
                         {colors.map((color, index) => (
                           <span
                             key={index}
-                            className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-xs md:text-sm"
+                            className="px-2 sm:px-3 py-0.5 sm:py-1 bg-gray-800 text-gray-300 rounded-full text-xxs sm:text-xs md:text-sm"
                           >
                             {color}
                           </span>
@@ -344,10 +647,10 @@ const ProductModal = ({ product, onClose }) => {
 
               {activeTab === "description" && (
                 <div>
-                  <h3 className="font-semibold mb-2 text-gray-300">
+                  <h3 className="font-semibold mb-1 sm:mb-2 text-gray-300 text-sm sm:text-base">
                     Product Description
                   </h3>
-                  <p className="text-gray-400 whitespace-pre-wrap text-sm md:text-base">
+                  <p className="text-gray-400 whitespace-pre-wrap text-xs sm:text-sm md:text-base">
                     {product.description}
                   </p>
                 </div>
@@ -362,45 +665,14 @@ const ProductModal = ({ product, onClose }) => {
 
 export default function ProductListingPage({ productsData }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return (
-      <div className="bg-gray-800 text-white min-h-screen">
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold mb-8 text-center text-gray-200">
-            Product Catalog
-          </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {Array(8)
-              .fill(0)
-              .map((_, i) => (
-                <div
-                  key={i}
-                  className="p-4 rounded-xl border border-gray-700 bg-gray-900"
-                >
-                  <div className="h-72 bg-gray-800 rounded-lg mb-4 animate-pulse"></div>
-                  <div className="h-4 bg-gray-800 rounded mb-2 animate-pulse"></div>
-                  <div className="h-4 bg-gray-800 rounded w-2/3 animate-pulse"></div>
-                </div>
-              ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="text-white min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {productsData.map((product) => (
+          {productsData.map((product, index) => (
             <div
-              key={product.id}
+              key={`${product.id}-${index}`}
               className="group relative p-4 rounded-xl overflow-hidden transition-all duration-300 border border-zinc-800 bg-zinc-900 hover:shadow-[0_2px_12px_rgba(255,255,255,0.03)] hover:-translate-y-0.5 will-change-transform cursor-pointer"
               onClick={() => setSelectedProduct(product)}
             >
@@ -411,11 +683,11 @@ export default function ProductListingPage({ productsData }) {
               </div>
 
               <div className="relative">
-                <div className="mb-4 overflow-hidden rounded-lg h-72 relative">
+                <div className="mb-4 overflow-hidden rounded-lg aspect-[4/5] relative">
                   <ImageWithFallback
                     src={product.main_image}
                     alt={product.product_name}
-                    className="w-full h-full"
+                    className="w-full h-full object-cover"
                   />
                 </div>
 
